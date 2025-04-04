@@ -38,7 +38,7 @@ fdescribe('PersonComponent', () => {
 
     const personDebugElement: DebugElement = fixture.debugElement;
     const headingDebug: DebugElement = personDebugElement.query(By.css('h3'));
-    const headingElement: HTMLElement = headingDebug.nativeElement;
+    const headingElement: HTMLHeadingElement = headingDebug.nativeElement;
 
     // Act
     fixture.detectChanges();
@@ -54,7 +54,7 @@ fdescribe('PersonComponent', () => {
 
     const personDebugElement: DebugElement = fixture.debugElement;
     const paragraphDebug: DebugElement = personDebugElement.query(By.css('p'));
-    const paragraphElement: HTMLElement = paragraphDebug.nativeElement;
+    const paragraphElement: HTMLParagraphElement = paragraphDebug.nativeElement;
 
     // Act
     fixture.detectChanges();
@@ -72,7 +72,7 @@ fdescribe('PersonComponent', () => {
     const buttonDebug: DebugElement = personDebugElement.query(
       By.css('.btn-imc')
     );
-    const buttonElement: HTMLElement = buttonDebug.nativeElement;
+    const buttonElement: HTMLButtonElement = buttonDebug.nativeElement;
 
     // Act
     component.calcIMC();
@@ -82,7 +82,7 @@ fdescribe('PersonComponent', () => {
     expect(buttonElement.textContent).toContain(expectedMsg);
   });
 
-  it('should display a text with IMC when do click', () => {
+  it('should display a text with IMC when clicked', () => {
     // Arrange
     component.person = new Person('Tester', 'LastTest', 20, 120, 1.65);
     const expectedMsg = 'overweight level 3';
@@ -91,7 +91,7 @@ fdescribe('PersonComponent', () => {
     const buttonDebug: DebugElement = personDebugElement.query(
       By.css('.btn-imc')
     );
-    const buttonElement: HTMLElement = buttonDebug.nativeElement;
+    const buttonElement: HTMLButtonElement = buttonDebug.nativeElement;
 
     // Act
     buttonDebug.triggerEventHandler('click', null);
@@ -99,5 +99,24 @@ fdescribe('PersonComponent', () => {
 
     // Assert
     expect(buttonElement.textContent).toContain(expectedMsg);
+  });
+
+  it('should raise selected event when clicked', () => {
+    //Arrange
+    const expectedPerson = new Person('Tester', 'LastTest', 20, 100, 1.7);
+    component.person = expectedPerson;
+
+    const personDebugElement = fixture.debugElement;
+    const buttonDebug = personDebugElement.query(By.css('.btn-choose'));
+
+    let selectedPerson: Person | undefined;
+    component.onSelected.subscribe((person) => (selectedPerson = person));
+
+    //Act
+    buttonDebug.triggerEventHandler('click', null);
+    fixture.detectChanges();
+
+    //Assert
+    expect(selectedPerson).toEqual(expectedPerson);
   });
 });
