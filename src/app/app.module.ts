@@ -8,9 +8,15 @@ import { AppComponent } from './app.component';
 import { ProductsComponent } from './components/products/products.component';
 import { TokenInterceptor } from './interceptors/token.interceptor';
 import { PersonComponent } from './components/person/person.component';
+import { PeopleComponent } from './components/people/people.component';
 
 @NgModule({
-  declarations: [AppComponent, ProductsComponent, PersonComponent],
+  declarations: [
+    AppComponent,
+    ProductsComponent,
+    PersonComponent,
+    PeopleComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
