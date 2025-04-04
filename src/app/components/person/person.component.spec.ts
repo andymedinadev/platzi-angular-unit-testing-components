@@ -62,4 +62,42 @@ fdescribe('PersonComponent', () => {
     // Assert
     expect(paragraphElement.textContent).toEqual(expectedMsg);
   });
+
+  it('should display a text with IMC when calcIMC is called', () => {
+    // Arrange
+    component.person = new Person('Tester', 'LastTest', 20, 120, 1.65);
+    const expectedMsg = 'overweight level 3';
+
+    const personDebugElement: DebugElement = fixture.debugElement;
+    const buttonDebug: DebugElement = personDebugElement.query(
+      By.css('.btn-imc')
+    );
+    const buttonElement: HTMLElement = buttonDebug.nativeElement;
+
+    // Act
+    component.calcIMC();
+    fixture.detectChanges();
+
+    // Assert
+    expect(buttonElement.textContent).toContain(expectedMsg);
+  });
+
+  it('should display a text with IMC when do click', () => {
+    // Arrange
+    component.person = new Person('Tester', 'LastTest', 20, 120, 1.65);
+    const expectedMsg = 'overweight level 3';
+
+    const personDebugElement: DebugElement = fixture.debugElement;
+    const buttonDebug: DebugElement = personDebugElement.query(
+      By.css('.btn-imc')
+    );
+    const buttonElement: HTMLElement = buttonDebug.nativeElement;
+
+    // Act
+    buttonDebug.triggerEventHandler('click', null);
+    fixture.detectChanges();
+
+    // Assert
+    expect(buttonElement.textContent).toContain(expectedMsg);
+  });
 });
