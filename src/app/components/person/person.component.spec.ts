@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
 import { PersonComponent } from './person.component';
-import { By } from '@angular/platform-browser';
+import { Person } from 'src/app/models';
 
 fdescribe('PersonComponent', () => {
   let component: PersonComponent;
@@ -24,19 +25,41 @@ fdescribe('PersonComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have <h3> element with text: "Hola, PersonComponent"', () => {
+  it('should the name be "Tester"', () => {
+    component.person = new Person('Tester', 'LastTest', 20, 100, 1.7);
+    expect(component.person.name).toEqual('Tester');
+  });
+
+  it('should have <h3> element with text: "Hello, {person.name}"', () => {
+    // Arrange
+    component.person = new Person('Tester', 'LastTest', 20, 100, 1.7);
+
+    const expectedMsg = 'Hello, Tester';
+
     const personDebugElement: DebugElement = fixture.debugElement;
     const headingDebug: DebugElement = personDebugElement.query(By.css('h3'));
     const headingElement: HTMLElement = headingDebug.nativeElement;
 
-    expect(headingElement.textContent).toEqual('Hola, PersonComponent');
+    // Act
+    fixture.detectChanges();
+
+    // Assert
+    expect(headingElement.textContent).toEqual(expectedMsg);
   });
 
-  it('should have <p> element with text: "Soy un parrafo"', () => {
+  it('should have <p> element with text: "My height is: {person.height}"', () => {
+    // Arrange
+    component.person = new Person('Tester', 'LastTest', 20, 100, 1.7);
+    const expectedMsg = 'My height is: 1.7';
+
     const personDebugElement: DebugElement = fixture.debugElement;
     const paragraphDebug: DebugElement = personDebugElement.query(By.css('p'));
     const paragraphElement: HTMLElement = paragraphDebug.nativeElement;
 
-    expect(paragraphElement.textContent).toEqual('Soy un parrafo');
+    // Act
+    fixture.detectChanges();
+
+    // Assert
+    expect(paragraphElement.textContent).toEqual(expectedMsg);
   });
 });
