@@ -10,7 +10,6 @@ export class Person {
   calcIMC(): string {
     const imc = this.weight / (this.height * this.height);
     const roundedIMC = Math.round(imc);
-    console.log('🚀 ~ Person ~ calcIMC ~ roundedIMC:', roundedIMC);
 
     if (roundedIMC < 0 || roundedIMC === Infinity) {
       return 'not found';
