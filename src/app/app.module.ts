@@ -9,6 +9,7 @@ import { ProductsComponent } from './components/products/products.component';
 import { TokenInterceptor } from './interceptors/token.interceptor';
 import { PersonComponent } from './components/person/person.component';
 import { PeopleComponent } from './components/people/people.component';
+import { ProductComponent } from './components/product/product.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { PeopleComponent } from './components/people/people.component';
     ProductsComponent,
     PersonComponent,
     PeopleComponent,
+    ProductComponent,
   ],
   imports: [
     BrowserModule,
