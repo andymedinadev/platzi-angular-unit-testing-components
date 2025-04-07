@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DebugElement } from '@angular/core';
+import { Component, DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 import { PersonComponent } from './person.component';
 import { Person } from 'src/app/models';
 
-fdescribe('PersonComponent', () => {
+describe('PersonComponent', () => {
   let component: PersonComponent;
   let fixture: ComponentFixture<PersonComponent>;
 
@@ -118,5 +118,72 @@ fdescribe('PersonComponent', () => {
 
     //Assert
     expect(selectedPerson).toEqual(expectedPerson);
+  });
+});
+
+@Component({
+  template: `<app-person
+    [person]="personToInput"
+    (onSelected)="onSelected($event)"
+  ></app-person>`,
+})
+class HostComponent {
+  personToInput = new Person('HostName', 'LastNameHost', 30, 120, 1.6);
+
+  personFromOutput: Person | undefined;
+
+  onSelected(person: Person) {
+    this.personFromOutput = person;
+  }
+}
+
+fdescribe('PersonComponent from HostComponent', () => {
+  let component: HostComponent;
+  let fixture: ComponentFixture<HostComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [HostComponent, PersonComponent],
+    }).compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(HostComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should display person name', () => {
+    // Arrange
+    const expectedPersonName = component.personToInput.name;
+
+    const hostComponentDebugElement = fixture.debugElement;
+    const headingDebug = hostComponentDebugElement.query(By.css('h3'));
+    const headingElement: HTMLHeadingElement = headingDebug.nativeElement;
+
+    // Act
+    fixture.detectChanges();
+
+    // Assert
+    expect(headingElement.textContent).toContain(expectedPersonName);
+  });
+
+  it('should raise selected event when clicked', () => {
+    // Arrange
+    const hostComponentDebugElement = fixture.debugElement;
+    const buttonDebugElement = hostComponentDebugElement.query(
+      By.css('.btn-choose')
+    );
+
+    // Act
+    buttonDebugElement.triggerEventHandler('click', null);
+    fixture.detectChanges();
+
+    // Assert
+    expect(component.personToInput).toEqual(component.personFromOutput!);
   });
 });
