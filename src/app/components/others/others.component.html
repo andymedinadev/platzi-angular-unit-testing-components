@@ -1,6 +1,7 @@
 <section class="container">
   <h3>Directiva Test</h3>
-  <h5>Not highlighted (default)</h5>
-  <h5 [highlight]="'yellow'">Highlighted</h5>
+  <h5>Not highlighted</h5>
+  <h5 highlight>Highlighted (default)</h5>
+  <h5 [highlight]="'yellow'">Highlighted yellow</h5>
   <input [(ngModel)]="color" [highlight]="color" />
 </section>
