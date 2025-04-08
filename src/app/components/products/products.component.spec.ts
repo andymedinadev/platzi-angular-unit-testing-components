@@ -4,11 +4,13 @@ import {
   TestBed,
   tick,
 } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { defer, of } from 'rxjs';
 
 import { ProductsComponent } from './products.component';
 import { ProductComponent } from '../product/product.component';
 import { ProductService } from 'src/app/services/product.service';
+import { ValueService } from 'src/app/services/value.service';
 import { generateManyProducts } from 'src/app/models/product.mock';
 
 describe('Tests for ProductsComponent', () => {
@@ -17,11 +19,17 @@ describe('Tests for ProductsComponent', () => {
 
   let productService: jasmine.SpyObj<ProductService>;
 
+  let valueService: jasmine.SpyObj<ValueService>;
+
   beforeEach(async () => {
     const productServiceSpy = jasmine.createSpyObj<ProductService>(
       'ProductService',
       ['getAll']
     );
+
+    const valueServiceSpy = jasmine.createSpyObj('ValueService', [
+      'getPromiseValue',
+    ]);
 
     await TestBed.configureTestingModule({
       declarations: [ProductsComponent, ProductComponent],
@@ -29,6 +37,10 @@ describe('Tests for ProductsComponent', () => {
         {
           provide: ProductService,
           useValue: productServiceSpy,
+        },
+        {
+          provide: ValueService,
+          useValue: valueServiceSpy,
         },
       ],
     }).compileComponents();
@@ -41,6 +53,8 @@ describe('Tests for ProductsComponent', () => {
     productService = TestBed.inject(
       ProductService
     ) as jasmine.SpyObj<ProductService>;
+
+    valueService = TestBed.inject(ValueService) as jasmine.SpyObj<ValueService>;
   });
 
   it('should create', () => {
@@ -115,6 +129,53 @@ describe('Tests for ProductsComponent', () => {
 
       // Assert
       expect(component.status).toEqual('error');
+    }));
+  });
+
+  describe('Tests for callPromise', () => {
+    it('should call to the promise', async () => {
+      // Arrange
+      const productsMock = generateManyProducts(10);
+      productService.getAll.and.returnValue(of(productsMock));
+
+      const mockMsg = 'my mock string';
+      valueService.getPromiseValue.and.returnValue(Promise.resolve(mockMsg));
+
+      // Act
+      await component.callPromise();
+      fixture.detectChanges(); // runs ngOnInit, needs productServiceSpy
+
+      // Assert
+      expect(component.rta).toEqual(mockMsg);
+      expect(valueService.getPromiseValue).toHaveBeenCalled();
+    });
+
+    it('should show "my mock string" in <p> when btn clicked', fakeAsync(() => {
+      // Arrange
+      const productsMock = generateManyProducts(10);
+      productService.getAll.and.returnValue(of(productsMock));
+
+      const mockMsg = 'my mock string';
+      valueService.getPromiseValue.and.returnValue(Promise.resolve(mockMsg));
+
+      const buttonDebugElement = fixture.debugElement.query(
+        By.css('.btn-promise')
+      );
+
+      // Act
+      buttonDebugElement.triggerEventHandler('click', null);
+      tick();
+      fixture.detectChanges();
+
+      // Arrange
+      const paragraphDebugElement = fixture.debugElement.query(
+        By.css('.rta-promise')
+      );
+      const paragraphElement: HTMLParagraphElement =
+        paragraphDebugElement.nativeElement;
+
+      // Assert
+      expect(paragraphElement.textContent).toContain(mockMsg);
     }));
   });
 });
